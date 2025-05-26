@@ -32,7 +32,7 @@ defmodule RealworldWeb.ArticleLive.Index do
         |> assign(:article, article)
         |> assign(:is_owner, is_owner?(socket.assigns[:current_user], article.user))
         |> assign(:following, follows(socket.assigns[:current_user], article.user))
-        |> assign(:favorite, favorited(article))
+        |> assign(:favorite, favorited(socket.assigns[:current_user], article))
 
       _ ->
         redirect(socket, to: ~p"/")
@@ -190,8 +190,8 @@ defmodule RealworldWeb.ArticleLive.Index do
 
   def favorited(nil, _), do: nil
 
-  def favorited(article) do
-    case Articles.favorited(article.id) do
+  def favorited(current_user, article) do
+    case Articles.favorited(article.id, actor: current_user) do
       {:ok, favorite} -> favorite
       _ -> nil
     end
