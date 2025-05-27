@@ -6,7 +6,10 @@ defmodule RealworldWeb.EditorLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, assign(socket, form_tags: [])}
+    {:ok, 
+     socket
+     |> assign(:current_user, socket.assigns[:current_user])
+     |> assign(:form_tags, [])}
   end
 
   @impl true
@@ -34,19 +37,15 @@ defmodule RealworldWeb.EditorLive.Index do
     current_params = AshPhoenix.Form.params(socket.assigns.form)
     params_with_tags = Map.put(current_params, "tags", socket.assigns.form_tags)
     
-    # Debug: Log the form params to see what tags are being submitted
-    IO.inspect(params_with_tags, label: "Form params before submit")
-    
     # Validate form with tags included
     form_with_tags = AshPhoenix.Form.validate(socket.assigns.form, params_with_tags, errors: false)
     
     case AshPhoenix.Form.submit(form_with_tags) do
       {:ok, result} ->
-        {:noreply, redirect(socket, to: "/article/#{result.slug}")}
+        {:noreply, redirect(socket, to: ~p"/article/#{result.slug}")}
 
       {:error, form} ->
-        IO.inspect(AshPhoenix.Form.errors(form), label: "Form submission errors")
-        {:noreply, assign(socket, form: form)}
+        {:noreply, assign(socket, form: to_form(form))}
     end
   end
 
@@ -86,9 +85,9 @@ defmodule RealworldWeb.EditorLive.Index do
   defp apply_action(socket, :new, _params) do
     form =
       AshPhoenix.Form.for_create(Article, :publish,
-        actor: socket.assigns.current_user,
+        actor: socket.assigns[:current_user],
         forms: [
-          auto?: true
+          auto?: false
         ]
       )
       |> to_form
@@ -104,9 +103,9 @@ defmodule RealworldWeb.EditorLive.Index do
         
         form =
           AshPhoenix.Form.for_update(article, :update,
-            actor: socket.assigns.current_user,
+            actor: socket.assigns[:current_user],
             forms: [
-              auto?: true
+              auto?: false
             ]
           )
           |> to_form
