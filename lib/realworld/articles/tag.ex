@@ -10,6 +10,10 @@ defmodule Realworld.Articles.Tag do
 
   actions do
     defaults [:read, :destroy, create: [:name]]
+
+    read :list_tags do
+      primary? true
+    end
   end
 
   attributes do

@@ -1,0 +1,140 @@
+<div class="home-page">
+  <!-- Banner -->
+  <div class="banner">
+    <div class="container">
+      <h1 class="logo-font">conduit</h1>
+      <p>A place to share your knowledge.</p>
+    </div>
+  </div>
+
+  <div class="container page">
+    <div class="row">
+      <!-- Main Content -->
+      <div class="col-md-9">
+        <!-- Tab Navigation (only show if user is logged in) -->
+        <%= if user_logged_in?(assigns) do %>
+          <div class="feed-toggle">
+            <ul class="nav nav-pills outline-active">
+              <li class="nav-item">
+                <a class={tab_class(@current_tab, :feed)} 
+                   href="#" 
+                   phx-click="switch_tab" 
+                   phx-value-tab="feed">
+                  Your Feed
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class={tab_class(@current_tab, :global)} 
+                   href="#" 
+                   phx-click="switch_tab" 
+                   phx-value-tab="global">
+                  Global Feed
+                </a>
+              </li>
+              <%= if @selected_tag do %>
+                <li class="nav-item">
+                  <a class={tab_class(@current_tab, :tag)} href="#">
+                    <i class="ion-pound"></i> <%= @selected_tag %>
+                  </a>
+                </li>
+              <% end %>
+            </ul>
+          </div>
+        <% else %>
+          <!-- Simple header for logged out users -->
+          <div class="feed-toggle">
+            <ul class="nav nav-pills outline-active">
+              <li class="nav-item">
+                <a class="nav-link active" href="#">Global Feed</a>
+              </li>
+            </ul>
+          </div>
+        <% end %>
+
+        <!-- Loading State -->
+        <%= if @loading do %>
+          <div class="article-preview">
+            <p>Loading articles...</p>
+          </div>
+        <% else %>
+          <!-- Articles List -->
+          <%= if length(@articles) > 0 do %>
+            <%= for article <- @articles do %>
+              <div class="article-preview">
+                <div class="article-meta">
+                  <a href={~p"/profile/#{article.user.username}"}>
+                    <img src={article.user.image || "https://static.productionready.io/images/smiley-cyrus.jpg"} alt={article.user.username} />
+                  </a>
+                  <div class="info">
+                    <a href={~p"/profile/#{article.user.username}"} class="author">
+                      <%= article.user.username %>
+                    </a>
+                    <span class="date"><%= format_date(article.created_at) %></span>
+                  </div>
+                  
+                  <!-- Favorite Button -->
+                  <%= if is_favorited?(article, @current_user) do %>
+                    <button class="btn btn-primary btn-sm pull-xs-right"
+                            phx-click="unfavorite_article"
+                            phx-value-slug={article.slug}>
+                      <i class="ion-heart"></i> <%= favorite_count(article) %>
+                    </button>
+                  <% else %>
+                    <button class="btn btn-outline-primary btn-sm pull-xs-right"
+                            phx-click="favorite_article"
+                            phx-value-slug={article.slug}>
+                      <i class="ion-heart"></i> <%= favorite_count(article) %>
+                    </button>
+                  <% end %>
+                </div>
+
+                <a href={~p"/article/#{article.slug}"} class="preview-link">
+                  <h1><%= article.title %></h1>
+                  <p><%= article.description %></p>
+                  <span>Read more...</span>
+                  
+                  <!-- Article Tags -->
+                  <%= if length(article.tags || []) > 0 do %>
+                    <ul class="tag-list">
+                      <%= for tag <- article.tags do %>
+                        <li class="tag-default tag-pill tag-outline">
+                          <%= tag.name %>
+                        </li>
+                      <% end %>
+                    </ul>
+                  <% end %>
+                </a>
+              </div>
+            <% end %>
+          <% else %>
+            <div class="article-preview">
+              <p>No articles are here... yet.</p>
+            </div>
+          <% end %>
+        <% end %>
+      </div>
+
+      <!-- Sidebar -->
+      <div class="col-md-3">
+        <div class="sidebar">
+          <p>Popular Tags</p>
+          
+          <%= if length(@popular_tags) > 0 do %>
+            <div class="tag-list">
+              <%= for tag <- @popular_tags do %>
+                <a href="#" 
+                   class="tag-pill tag-default"
+                   phx-click="filter_by_tag"
+                   phx-value-tag={tag.name}>
+                  <%= tag.name %>
+                </a>
+              <% end %>
+            </div>
+          <% else %>
+            <p>No tags are here... yet.</p>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

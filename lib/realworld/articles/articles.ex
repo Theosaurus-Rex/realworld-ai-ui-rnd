@@ -30,6 +30,29 @@ defmodule Realworld.Articles do
       define :favorited, action: :favorited, args: [:article_id]
     end
 
-    resource Realworld.Articles.Tag
+    resource Realworld.Articles.Tag do
+      define :list_tags
+    end
+  end
+
+  # Helper functions for the LiveView
+  def favorite_article(slug, user) do
+    case get_article_by_slug(slug, actor: user) do
+      {:ok, article} ->
+        favorite(user_id: user.id, article_id: article.id, actor: user)
+      
+      error ->
+        error
+    end
+  end
+
+  def unfavorite_article(slug, user) do
+    case get_article_by_slug(slug, actor: user) do
+      {:ok, article} ->
+        unfavorite(user_id: user.id, article_id: article.id, actor: user)
+      
+      error ->
+        error
+    end
   end
 end

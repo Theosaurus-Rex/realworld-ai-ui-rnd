@@ -2,9 +2,13 @@ defmodule RealworldWeb.LiveHelpers do
   import Phoenix.Component
 
   alias Realworld.Accounts.User
+  alias Realworld.Accounts
 
   def assign_defaults(%{"user" => "user?id=" <> user_id}, socket) do
-    current_user = User |> Ash.get!(user_id)
+    current_user = case Accounts.read!(User, id: user_id) do
+      [user] -> user
+      _ -> nil
+    end
 
     socket
     |> assign(current_user: current_user)
