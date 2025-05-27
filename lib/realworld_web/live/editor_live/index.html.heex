@@ -26,38 +26,42 @@
               ) %>
               <%= error_tag(@form, :body_raw) %>
             </fieldset>
-            <fieldset class="form-group">
-              <.simple_form
-                for={%{}}
-                as={:tag}
-                phx-submit="add_tag"
-                phx-change="validate"
-                class="tag-input-form"
-              >
-                <%= text_input(:tag, :name,
-                  class: "form-control",
-                  placeholder: "Enter tags",
-                  autocomplete: "off"
-                ) %>
-              </.simple_form>
-              
-              <div class="tag-list">
-                <.inputs_for :let={tag_form} field={@form[:tags]}>
-                  <span class="tag-default tag-pill">
-                    <i
-                      class="ion-close-round"
-                      phx-click="remove_tag"
-                      phx-value-path={tag_form.name}
-                    >
-                    </i>
-                    <%= " #{AshPhoenix.Form.value(tag_form, :name)} " %>
-                  </span>
-                </.inputs_for>
-              </div>
-            </fieldset>
             <%= submit("Publish Article", class: "btn btn-lg pull-xs-right btn-primary") %>
           </fieldset>
         </.simple_form>
+        
+        <!-- Tag input section outside main form -->
+        <fieldset class="form-group">
+          <.simple_form
+            for={%{}}
+            as={:tag}
+            phx-submit="add_tag"
+            phx-change="update_tag_input"
+            class="tag-input-form"
+          >
+            <%= text_input(:tag, :name,
+              class: "form-control",
+              placeholder: "Enter tags",
+              autocomplete: "off",
+              value: @tag_input,
+              phx_keyup: "update_tag_input"
+            ) %>
+          </.simple_form>
+          
+          <div class="tag-list">
+            <%= for tag <- @form_tags do %>
+              <span class="tag-default tag-pill">
+                <i
+                  class="ion-close-round"
+                  phx-click="remove_tag"
+                  phx-value-name={get_tag_display_name(tag)}
+                >
+                </i>
+                <%= " #{get_tag_display_name(tag)} " %>
+              </span>
+            <% end %>
+          </div>
+        </fieldset>
       </div>
     </div>
   </div>

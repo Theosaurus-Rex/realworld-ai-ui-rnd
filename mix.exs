@@ -8,6 +8,7 @@ defmodule Realworld.MixProject do
       elixir: "~> 1.14",
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
+      consolidate_protocols: Mix.env() != :dev,
       aliases: aliases(),
       deps: deps()
     ]
@@ -32,6 +33,9 @@ defmodule Realworld.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
+      {:ash_phoenix, github: "ash-project/ash_phoenix", branch: "main", override: true},
+      {:usage_rules, "~> 0.1", only: [:dev]},
+      {:igniter, "~> 0.5"},
       {:phoenix, "~> 1.7"},
       {:phoenix_html, "~> 4.1"},
       {:phoenix_html_helpers, "~> 1.0"},
@@ -48,8 +52,8 @@ defmodule Realworld.MixProject do
       {:jason, "~> 1.4"},
       {:plug_cowboy, "~> 2.7"},
       # {:ash, "~> 3.0"},
-      {:ash, github: "ash-project/ash", override: true},
-      {:ash_postgres, "~> 2.0"},
+      {:ash, github: "ash-project/ash", branch: "main", override: true},
+      {:ash_postgres, github: "ash-project/ash_postgres", override: true},
       {:ash_authentication, "~> 4.0"},
       {:ash_authentication_phoenix, "~> 2.0"},
       {:picosat_elixir, "~> 0.2"},

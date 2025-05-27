@@ -23,6 +23,10 @@ defmodule Realworld.Articles.ArticleTag do
     defaults [:create, :read, :update, :destroy]
   end
 
+  attributes do
+    # No uuid_primary_key since we're using composite primary keys
+  end
+
   relationships do
     belongs_to :article, Article, primary_key?: true, allow_nil?: false
     belongs_to :tag, Tag, primary_key?: true, allow_nil?: false
