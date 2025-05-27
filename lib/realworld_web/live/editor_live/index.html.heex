@@ -1,0 +1,64 @@
+<div class="editor-page">
+  <div class="container page">
+    <div class="row">
+      <div class="col-md-10 offset-md-1 col-xs-12">
+        <.simple_form for={@form} phx-submit="save" phx-change="validate">
+          <fieldset>
+            <fieldset class="form-group">
+              <%= text_input(@form, :title,
+                class: "form-control form-control-lg",
+                placeholder: "Article Title"
+              ) %>
+              <%= error_tag(@form, :title) %>
+            </fieldset>
+            <fieldset class="form-group">
+              <%= text_input(@form, :description,
+                class: "form-control",
+                placeholder: "What's this article about?"
+              ) %>
+              <%= error_tag(@form, :description) %>
+            </fieldset>
+            <fieldset class="form-group">
+              <%= textarea(@form, :body_raw,
+                class: "form-control",
+                rows: 8,
+                placeholder: "Write your article (in markdown)"
+              ) %>
+              <%= error_tag(@form, :body_raw) %>
+            </fieldset>
+            <fieldset class="form-group">
+              <.simple_form
+                for={%{}}
+                as={:tag}
+                phx-submit="add_tag"
+                phx-change="validate"
+                class="tag-input-form"
+              >
+                <%= text_input(:tag, :name,
+                  class: "form-control",
+                  placeholder: "Enter tags",
+                  autocomplete: "off"
+                ) %>
+              </.simple_form>
+              
+              <div class="tag-list">
+                <.inputs_for :let={tag_form} field={@form[:tags]}>
+                  <span class="tag-default tag-pill">
+                    <i
+                      class="ion-close-round"
+                      phx-click="remove_tag"
+                      phx-value-path={tag_form.name}
+                    >
+                    </i>
+                    <%= " #{AshPhoenix.Form.value(tag_form, :name)} " %>
+                  </span>
+                </.inputs_for>
+              </div>
+            </fieldset>
+            <%= submit("Publish Article", class: "btn btn-lg pull-xs-right btn-primary") %>
+          </fieldset>
+        </.simple_form>
+      </div>
+    </div>
+  </div>
+</div>
