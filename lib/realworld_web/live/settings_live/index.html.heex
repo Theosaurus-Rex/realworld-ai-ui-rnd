@@ -1,0 +1,54 @@
+<div class="settings-page">
+  <div class="container page">
+    <div class="row">
+      <div class="col-md-6 offset-md-3 col-xs-12">
+        <h1 class="text-xs-center">Your Settings</h1>
+
+        <.simple_form for={@form} phx-submit="save" phx-change="validate">
+          <fieldset>
+            <fieldset class="form-group">
+              <%= text_input(@form, :image,
+                class: "form-control",
+                placeholder: "URL of profile picture"
+              ) %>
+              <%= error_tag(@form, :image) %>
+            </fieldset>
+            
+            <fieldset class="form-group">
+              <%= text_input(@form, :username,
+                class: "form-control form-control-lg",
+                placeholder: "Your Name"
+              ) %>
+              <%= error_tag(@form, :username) %>
+            </fieldset>
+            
+            <fieldset class="form-group">
+              <%= textarea(@form, :bio,
+                class: "form-control form-control-lg",
+                rows: 8,
+                placeholder: "Short bio about you"
+              ) %>
+              <%= error_tag(@form, :bio) %>
+            </fieldset>
+            
+            <fieldset class="form-group">
+              <%= text_input(@form, :email,
+                class: "form-control form-control-lg",
+                placeholder: "Email"
+              ) %>
+              <%= error_tag(@form, :email) %>
+            </fieldset>
+            
+            <%= submit("Update Settings", class: "btn btn-lg btn-primary pull-xs-right") %>
+          </fieldset>
+        </.simple_form>
+        
+        <hr />
+        
+        <button class="btn btn-outline-danger" phx-click="logout">
+          Or click here to logout.
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

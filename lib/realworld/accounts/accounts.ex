@@ -10,6 +10,7 @@ defmodule Realworld.Accounts do
 
     resource Realworld.Accounts.User do
       define :get_user_by_username, action: :get_by_username, args: [:username]
+      define :update_user, action: :update
     end
   end
 end
