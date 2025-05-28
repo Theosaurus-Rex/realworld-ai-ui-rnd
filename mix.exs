@@ -33,6 +33,7 @@ defmodule Realworld.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
+      {:tidewave, "~> 0.1", only: [:dev]},
       {:ash_phoenix, github: "ash-project/ash_phoenix", branch: "main", override: true},
       {:usage_rules, "~> 0.1", only: [:dev]},
       {:igniter, "~> 0.5"},
