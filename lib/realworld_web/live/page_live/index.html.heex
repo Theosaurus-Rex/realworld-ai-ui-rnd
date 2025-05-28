@@ -75,13 +75,13 @@
                   <!-- Favorite Button -->
                   <%= if is_favorited?(article, @current_user) do %>
                     <button class="btn btn-primary btn-sm pull-xs-right"
-                            phx-click="unfavorite_article"
+                            phx-click="unfavorite-article"
                             phx-value-slug={article.slug}>
                       <i class="ion-heart"></i> <%= favorite_count(article) %>
                     </button>
                   <% else %>
                     <button class="btn btn-outline-primary btn-sm pull-xs-right"
-                            phx-click="favorite_article"
+                            phx-click="favorite-article"
                             phx-value-slug={article.slug}>
                       <i class="ion-heart"></i> <%= favorite_count(article) %>
                     </button>

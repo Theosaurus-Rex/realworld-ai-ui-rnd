@@ -2,7 +2,6 @@ defmodule RealworldWeb.PageLive.Index do
   use RealworldWeb, :live_view
 
   alias Realworld.Articles
-  alias RealworldWeb.LiveHelpers
 
   @impl true
   def mount(_params, _session, socket) do
@@ -34,40 +33,46 @@ defmodule RealworldWeb.PageLive.Index do
      |> load_articles()}
   end
 
-  def handle_event("favorite_article", %{"slug" => slug}, socket) do
+  def handle_event("favorite-article", %{"slug" => slug}, socket) do
     case socket.assigns[:current_user] do
       nil ->
-        {:noreply, put_flash(socket, :error, "You must be logged in to favorite articles")}
+        {:noreply, redirect(socket, to: ~p"/login")}
       
       user ->
-        case Articles.favorite_article(slug, user) do
-          {:ok, _} ->
-            {:noreply, 
-             socket
-             |> put_flash(:info, "Article favorited!")
-             |> load_articles()}
+        case Articles.get_article_by_slug(slug, actor: user) do
+          {:ok, article} ->
+            case Articles.favorite(article.id, actor: user) do
+              {:ok, _} ->
+                {:noreply, load_articles(socket)}
+              
+              {:error, _} ->
+                {:noreply, socket}
+            end
           
           {:error, _} ->
-            {:noreply, put_flash(socket, :error, "Failed to favorite article")}
+            {:noreply, socket}
         end
     end
   end
 
-  def handle_event("unfavorite_article", %{"slug" => slug}, socket) do
+  def handle_event("unfavorite-article", %{"slug" => slug}, socket) do
     case socket.assigns[:current_user] do
       nil ->
-        {:noreply, put_flash(socket, :error, "You must be logged in")}
+        {:noreply, redirect(socket, to: ~p"/login")}
       
       user ->
-        case Articles.unfavorite_article(slug, user) do
-          {:ok, _} ->
-            {:noreply, 
-             socket
-             |> put_flash(:info, "Article unfavorited!")
-             |> load_articles()}
+        case Articles.get_article_by_slug(slug, actor: user) do
+          {:ok, article} ->
+            case Articles.unfavorite(article.id, return_destroyed?: true, actor: user) do
+              {:ok, _} ->
+                {:noreply, load_articles(socket)}
+              
+              {:error, _} ->
+                {:noreply, socket}
+            end
           
           {:error, _} ->
-            {:noreply, put_flash(socket, :error, "Failed to unfavorite article")}
+            {:noreply, socket}
         end
     end
   end
